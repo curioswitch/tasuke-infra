@@ -13,13 +13,18 @@
       "source.organizeImports.biome": "explicit",
       "quickfix.biome": "explicit"
     },
+    "editor.tabSize": 2,
     "eslint.workingDirectories": [{ "mode": "auto" }],
     "prettier.configPath": ".prettierrc.yml",
     "prettier.requireConfig": true,
     "jest.jestCommandLine": "yarn run test",
     "jest.runMode": { "type": "on-demand", "deferred": true },
-    // Multiple language syntax mysteriously doesn't work for all of them.
-    "[javascript][json]": {
+    // Multiple language syntax mysteriously doesn't reliably work.
+    "[javascript]": {
+      "editor.formatOnSave": true,
+      "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[json]": {
       "editor.formatOnSave": true,
       "editor.defaultFormatter": "biomejs.biome"
     },

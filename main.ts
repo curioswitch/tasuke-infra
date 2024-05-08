@@ -6,6 +6,7 @@ const app = new App();
 new TasukeStack(app, {
   environment: "dev",
   project: "tasuke-dev",
+  domain: "alpha.tasuke.dev",
 });
 
 app.synth();
