@@ -1,7 +1,9 @@
+import { DataGoogleIamWorkloadIdentityPool } from "@cdktf/provider-google-beta/lib/data-google-iam-workload-identity-pool";
 import { GoogleBetaProvider } from "@cdktf/provider-google-beta/lib/provider";
 import { GoogleProvider } from "@cdktf/provider-google/lib/provider";
 import { GcsBackend, TerraformStack } from "cdktf";
 import type { Construct } from "constructs";
+import { Apps } from "./apps";
 import { Database } from "./database";
 import { Hosting } from "./hosting";
 import { Identity } from "./identity";
@@ -32,11 +34,25 @@ export class TasukeStack extends TerraformStack {
       userProjectOverride: true,
     });
 
+    const githubIdPool = new DataGoogleIamWorkloadIdentityPool(
+      this,
+      "github-id-pool",
+      {
+        workloadIdentityPoolId: "github",
+        provider: googleBeta,
+      },
+    );
+
     new Database(this);
 
     new Identity(this, {
       project: config.project,
       domain: config.domain,
+    });
+
+    new Apps(this, {
+      domain: config.domain,
+      githubIdPool: githubIdPool.name,
     });
 
     new Hosting(this, {
