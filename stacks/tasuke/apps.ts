@@ -2,9 +2,12 @@ import { ArtifactRegistryRepository } from "@cdktf/provider-google/lib/artifact-
 import { ArtifactRegistryRepositoryIamMember } from "@cdktf/provider-google/lib/artifact-registry-repository-iam-member";
 import { ProjectService } from "@cdktf/provider-google/lib/project-service";
 import { Construct } from "constructs";
+import { Service } from "../../constructs/service";
 
 export interface AppsConfig {
+  project: string;
   domain: string;
+  environment: string;
   githubIdPool: string;
 }
 
@@ -20,6 +23,10 @@ export class Apps extends Construct {
       },
     );
 
+    const runService = new ProjectService(this, "run", {
+      service: "run.googleapis.com",
+    });
+
     const dockerRegistry = new ArtifactRegistryRepository(this, "docker-repo", {
       repositoryId: "docker",
       location: "us-central1",
@@ -27,11 +34,24 @@ export class Apps extends Construct {
       dependsOn: [artifactRegistryService],
     });
 
+    const tasukeRepoMember = `principalSet://iam.googleapis.com/${config.githubIdPool}/attribute.repository/curioswitch/tasuke`;
+
     new ArtifactRegistryRepositoryIamMember(this, "docker-member-github", {
       repository: dockerRegistry.name,
       location: dockerRegistry.location,
       role: "roles/artifactregistry.writer",
-      member: `principalSet://iam.googleapis.com/${config.githubIdPool}/attribute.repository/curioswitch/tasuke`,
+      member: tasukeRepoMember,
+    });
+
+    new Service(this, {
+      name: "frontend-server",
+      project: config.project,
+      environment: config.environment,
+      artifactRegistry: dockerRegistry,
+      deployer: tasukeRepoMember,
+      public: true,
+
+      dependsOn: [runService],
     });
   }
 }

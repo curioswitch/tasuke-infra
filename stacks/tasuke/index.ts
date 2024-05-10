@@ -51,7 +51,9 @@ export class TasukeStack extends TerraformStack {
     });
 
     new Apps(this, {
+      project: config.project,
       domain: config.domain,
+      environment: config.environment,
       githubIdPool: githubIdPool.name,
     });
 
