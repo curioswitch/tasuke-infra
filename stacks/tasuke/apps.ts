@@ -1,5 +1,7 @@
 import { ArtifactRegistryRepository } from "@cdktf/provider-google/lib/artifact-registry-repository";
 import { ArtifactRegistryRepositoryIamMember } from "@cdktf/provider-google/lib/artifact-registry-repository-iam-member";
+import { ProjectIamCustomRole } from "@cdktf/provider-google/lib/project-iam-custom-role";
+import { ProjectIamMember } from "@cdktf/provider-google/lib/project-iam-member";
 import { ProjectService } from "@cdktf/provider-google/lib/project-service";
 import { Construct } from "constructs";
 import { Service } from "../../constructs/service";
@@ -35,6 +37,23 @@ export class Apps extends Construct {
     });
 
     const tasukeRepoMember = `principalSet://iam.googleapis.com/${config.githubIdPool}/attribute.repository/curioswitch/tasuke`;
+
+    const deployerRole = new ProjectIamCustomRole(this, "cloudrun-deployer", {
+      roleId: "cloudRunDeployer",
+      title: "Cloud Run Deployer",
+      permissions: [
+        "run.operations.get",
+        "run.services.create",
+        "run.services.get",
+        "run.services.update",
+      ],
+    });
+
+    new ProjectIamMember(this, "github-cloudrun-deploy", {
+      project: config.project,
+      role: deployerRole.name,
+      member: tasukeRepoMember,
+    });
 
     new ArtifactRegistryRepositoryIamMember(this, "docker-member-github", {
       repository: dockerRegistry.name,
