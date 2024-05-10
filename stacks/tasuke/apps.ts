@@ -31,7 +31,7 @@ export class Apps extends Construct {
       repository: dockerRegistry.name,
       location: dockerRegistry.location,
       role: "roles/artifactregistry.writer",
-      member: `principalSet://iam.googleapis.com/${config.githubIdPool}/attribute.repository/curioswitch/tasuke"`,
+      member: `principalSet://iam.googleapis.com/${config.githubIdPool}/attribute.repository/curioswitch/tasuke`,
     });
   }
 }
