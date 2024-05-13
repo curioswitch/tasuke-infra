@@ -16,6 +16,13 @@ export class Identity extends Construct {
     });
 
     new IdentityPlatformConfig(this, "identity-platform", {
+      signIn: {
+        // Enable email mostly for integration tests that don't require GitHub access.
+        // All real users will use GitHub auth.
+        email: {
+          enabled: true,
+        },
+      },
       authorizedDomains: [
         "localhost",
         config.domain,
