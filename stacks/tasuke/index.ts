@@ -6,6 +6,7 @@ import { GcsBackend, TerraformStack } from "cdktf";
 import type { Construct } from "constructs";
 import { Apps } from "./apps";
 import { Database } from "./database";
+import { Dns } from "./dns";
 import { Hosting } from "./hosting";
 import { Identity } from "./identity";
 import { ServiceAccounts } from "./service-accounts";
@@ -74,6 +75,10 @@ export class TasukeStack extends TerraformStack {
       project: config.project,
       domain: config.domain,
       googleBeta,
+    });
+
+    new Dns(this, {
+      domain: config.domain,
     });
   }
 }

@@ -9,4 +9,10 @@ new TasukeStack(app, {
   domain: "alpha.tasuke.dev",
 });
 
+new TasukeStack(app, {
+  environment: "prod",
+  project: "tasuke-prod",
+  domain: "tasuke.dev",
+});
+
 app.synth();
