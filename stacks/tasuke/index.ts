@@ -1,5 +1,6 @@
 import { DataGoogleIamWorkloadIdentityPool } from "@cdktf/provider-google-beta/lib/data-google-iam-workload-identity-pool";
 import { GoogleBetaProvider } from "@cdktf/provider-google-beta/lib/provider";
+import { ProjectIamMember } from "@cdktf/provider-google/lib/project-iam-member";
 import { GoogleProvider } from "@cdktf/provider-google/lib/provider";
 import { GcsBackend, TerraformStack } from "cdktf";
 import type { Construct } from "constructs";
@@ -7,6 +8,7 @@ import { Apps } from "./apps";
 import { Database } from "./database";
 import { Hosting } from "./hosting";
 import { Identity } from "./identity";
+import { ServiceAccounts } from "./service-accounts";
 
 export interface TasukeConfig {
   environment: string;
@@ -48,6 +50,17 @@ export class TasukeStack extends TerraformStack {
     new Identity(this, {
       project: config.project,
       domain: config.domain,
+    });
+
+    // Even owner permission does not allow creating impersonation tokens.
+    new ProjectIamMember(this, "sysadmin-token-creator", {
+      project: config.project,
+      role: "roles/iam.serviceAccountTokenCreator",
+      member: "group:sysadmin@curioswitch.org",
+    });
+
+    new ServiceAccounts(this, {
+      project: config.project,
     });
 
     new Apps(this, {
