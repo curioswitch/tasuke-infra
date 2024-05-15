@@ -12,7 +12,9 @@ new TasukeStack(app, {
 new TasukeStack(app, {
   environment: "prod",
   project: "tasuke-prod",
+  devProject: "tasuke-dev",
   domain: "tasuke.dev",
+  devDomain: "alpha.tasuke.dev",
 });
 
 app.synth();

@@ -14,7 +14,9 @@ import { ServiceAccounts } from "./service-accounts";
 export interface TasukeConfig {
   environment: string;
   project: string;
+  devProject?: string;
   domain: string;
+  devDomain?: string;
 }
 
 export class TasukeStack extends TerraformStack {
@@ -71,14 +73,18 @@ export class TasukeStack extends TerraformStack {
       githubIdPool: githubIdPool.name,
     });
 
-    new Hosting(this, {
+    const hosting = new Hosting(this, {
       project: config.project,
       domain: config.domain,
       googleBeta,
     });
 
     new Dns(this, {
+      project: config.project,
       domain: config.domain,
+      devProject: config.devProject,
+      devDomain: config.devDomain,
+      firebaseDomain: hosting.customDomain,
     });
   }
 }
