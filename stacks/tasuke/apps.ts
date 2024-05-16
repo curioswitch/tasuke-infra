@@ -10,7 +10,7 @@ export interface AppsConfig {
   project: string;
   domain: string;
   environment: string;
-  githubIdPool: string;
+  githubRepoIamMember: string;
 }
 
 export class Apps extends Construct {
@@ -36,8 +36,6 @@ export class Apps extends Construct {
       dependsOn: [artifactRegistryService],
     });
 
-    const tasukeRepoMember = `principalSet://iam.googleapis.com/${config.githubIdPool}/attribute.repository/curioswitch/tasuke`;
-
     const deployerRole = new ProjectIamCustomRole(this, "cloudrun-deployer", {
       roleId: "cloudRunDeployer",
       title: "Cloud Run Deployer",
@@ -52,14 +50,14 @@ export class Apps extends Construct {
     new ProjectIamMember(this, "github-cloudrun-deploy", {
       project: config.project,
       role: deployerRole.name,
-      member: tasukeRepoMember,
+      member: config.githubRepoIamMember,
     });
 
     new ArtifactRegistryRepositoryIamMember(this, "docker-member-github", {
       repository: dockerRegistry.name,
       location: dockerRegistry.location,
       role: "roles/artifactregistry.writer",
-      member: tasukeRepoMember,
+      member: config.githubRepoIamMember,
     });
 
     new Service(this, {
@@ -67,7 +65,7 @@ export class Apps extends Construct {
       project: config.project,
       environment: config.environment,
       artifactRegistry: dockerRegistry,
-      deployer: tasukeRepoMember,
+      deployer: config.githubRepoIamMember,
       public: true,
 
       dependsOn: [runService],

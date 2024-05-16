@@ -2,12 +2,15 @@ import { GoogleFirebaseHostingCustomDomain } from "@cdktf/provider-google-beta/l
 import { GoogleFirebaseHostingSite } from "@cdktf/provider-google-beta/lib/google-firebase-hosting-site";
 import { GoogleFirebaseWebApp } from "@cdktf/provider-google-beta/lib/google-firebase-web-app";
 import type { GoogleBetaProvider } from "@cdktf/provider-google-beta/lib/provider";
+import { ProjectIamMember } from "@cdktf/provider-google/lib/project-iam-member";
+import { ServiceAccount } from "@cdktf/provider-google/lib/service-account";
 import { TerraformOutput } from "cdktf";
 import { Construct } from "constructs";
 
 export interface HostingConfig {
   project: string;
   domain: string;
+  githubRepoIamMember: string;
 
   googleBeta: GoogleBetaProvider;
 }
@@ -42,6 +45,24 @@ export class Hosting extends Construct {
 
     new TerraformOutput(this, "custom-domain-dns-updates", {
       value: this.customDomain.requiredDnsUpdates,
+    });
+
+    // Firebase does not support direct workload identity,
+    // so we need to create a service account to deploy.
+    const firebaseDeployer = new ServiceAccount(this, "firebase-deployer", {
+      accountId: "firebase-deployer",
+    });
+
+    new ProjectIamMember(this, "firebase-deployer-hosting-admin", {
+      project: config.project,
+      role: "roles/firebasehosting.admin",
+      member: firebaseDeployer.member,
+    });
+
+    new ProjectIamMember(this, "github-firebase-deployer", {
+      project: config.project,
+      role: "roles/iam.serviceAccountTokenCreator",
+      member: config.githubRepoIamMember,
     });
   }
 }
