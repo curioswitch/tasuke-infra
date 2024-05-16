@@ -55,7 +55,15 @@ export class Dns extends Construct {
     // Because this is technically temporary, assuming that gets fixed, we hackily branch on the domain rather
     // than parameterizing.
     if (config.domain === "alpha.tasuke.dev") {
-      // Need to get details from console since we use a subdomain zone.
+      // Need to get details from console since we use a subdomain zone, GCP rejects CNAME records, likely
+      // incorrectly.
+      new DnsRecordSet(this, "root-hosting-a", {
+        managedZone: zone.name,
+        name: zone.dnsName,
+        type: "A",
+        ttl: 300,
+        rrdatas: ["199.36.158.100"],
+      });
       new DnsRecordSet(this, "root-hosting-txt", {
         managedZone: zone.name,
         name: zone.dnsName,

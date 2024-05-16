@@ -17,6 +17,9 @@ export interface TasukeConfig {
   devProject?: string;
   domain: string;
   devDomain?: string;
+
+  githubClientId: string;
+  githubClientSecretCiphertext: string;
 }
 
 export class TasukeStack extends TerraformStack {
@@ -53,6 +56,8 @@ export class TasukeStack extends TerraformStack {
     new Identity(this, {
       project: config.project,
       domain: config.domain,
+      githubClientId: config.githubClientId,
+      githubClientSecretCiphertext: config.githubClientSecretCiphertext,
     });
 
     // Even owner permission does not allow creating impersonation tokens.

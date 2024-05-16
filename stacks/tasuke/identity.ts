@@ -1,10 +1,13 @@
 import { IdentityPlatformConfig } from "@cdktf/provider-google/lib/identity-platform-config";
+import { IdentityPlatformDefaultSupportedIdpConfig } from "@cdktf/provider-google/lib/identity-platform-default-supported-idp-config";
 import { ProjectService } from "@cdktf/provider-google/lib/project-service";
 import { Construct } from "constructs";
 
 export interface IdentityConfig {
   project: string;
   domain: string;
+  githubClientId: string;
+  githubClientSecretCiphertext: string;
 }
 
 export class Identity extends Construct {
@@ -30,6 +33,13 @@ export class Identity extends Construct {
         `${config.project}.firebaseapp.com`,
       ],
       dependsOn: [service],
+    });
+
+    new IdentityPlatformDefaultSupportedIdpConfig(this, "github-idp", {
+      enabled: true,
+      idpId: "github.com",
+      clientId: config.githubClientId,
+      clientSecret: config.githubClientSecretCiphertext,
     });
   }
 }
