@@ -60,7 +60,7 @@ export class Apps extends Construct {
       member: config.githubRepoIamMember,
     });
 
-    new Service(this, {
+    const frontendServer = new Service(this, {
       name: "frontend-server",
       project: config.project,
       environment: config.environment,
@@ -69,6 +69,12 @@ export class Apps extends Construct {
       public: true,
 
       dependsOn: [runService],
+    });
+
+    new ProjectIamMember(this, "frontend-server-firestore", {
+      project: config.project,
+      role: "roles/datastore.user",
+      member: frontendServer.serviceAccount.member,
     });
   }
 }
