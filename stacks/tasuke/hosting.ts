@@ -2,6 +2,7 @@ import { GoogleFirebaseHostingCustomDomain } from "@cdktf/provider-google-beta/l
 import { GoogleFirebaseHostingSite } from "@cdktf/provider-google-beta/lib/google-firebase-hosting-site";
 import { GoogleFirebaseWebApp } from "@cdktf/provider-google-beta/lib/google-firebase-web-app";
 import type { GoogleBetaProvider } from "@cdktf/provider-google-beta/lib/provider";
+import { ProjectIamCustomRole } from "@cdktf/provider-google/lib/project-iam-custom-role";
 import { ProjectIamMember } from "@cdktf/provider-google/lib/project-iam-member";
 import { ServiceAccount } from "@cdktf/provider-google/lib/service-account";
 import { TerraformOutput } from "cdktf";
@@ -47,6 +48,13 @@ export class Hosting extends Construct {
       value: this.customDomain.requiredDnsUpdates,
     });
 
+    // For forwarding to cloud run.
+    const runViewerRole = new ProjectIamCustomRole(this, "cloudrun-deployer", {
+      roleId: "cloudRunServiceViewer",
+      title: "Cloud Run Service Viewer",
+      permissions: ["run.services.get"],
+    });
+
     // Firebase does not support direct workload identity,
     // so we need to create a service account to deploy.
     const firebaseDeployer = new ServiceAccount(this, "firebase-deployer", {
@@ -56,6 +64,12 @@ export class Hosting extends Construct {
     new ProjectIamMember(this, "firebase-deployer-hosting-admin", {
       project: config.project,
       role: "roles/firebasehosting.admin",
+      member: firebaseDeployer.member,
+    });
+
+    new ProjectIamMember(this, "firebase-deployer-cloudrun-viewer", {
+      project: config.project,
+      role: runViewerRole.name,
       member: firebaseDeployer.member,
     });
 
