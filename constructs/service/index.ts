@@ -18,6 +18,8 @@ export interface ServiceConfig {
   artifactRegistry: ArtifactRegistryRepository;
   public?: boolean;
 
+  otelCollector: string;
+
   deployer: string;
 
   dependsOn?: ITerraformDependable[];
@@ -72,6 +74,43 @@ export class Service extends Construct {
       name: "CONFIG_ENV",
       value: config.environment,
     });
+    env.push({
+      name: "OTEL_METRICS_EXPORTER",
+      value: "otlp",
+    });
+    env.push({
+      name: "OTEL_TRACES_EXPORTER",
+      value: "otlp",
+    });
+    env.push({
+      name: "OTEL_SERVICE_NAME",
+      value: config.name,
+    });
+    if (config.public) {
+      env.push({
+        name: "OTEL_TRACES_SAMPLER",
+        value: "always_on",
+      });
+    }
+
+    const otelContainer = {
+      image: config.otelCollector,
+      name: "collector",
+      resources: {
+        cpuIdle: true,
+        startupCpuBoost: true,
+        limits: {
+          cpu: "500m",
+          memory: "256Mi",
+        },
+      },
+      startupProbe: {
+        httpGet: {
+          path: "/",
+          port: 13133,
+        },
+      },
+    };
 
     this.run = new GoogleCloudRunV2Service(this, "service", {
       name: config.name,
@@ -99,6 +138,7 @@ export class Service extends Construct {
               containerPort: 8080,
             },
           },
+          otelContainer,
         ],
       },
       dependsOn: config.dependsOn,

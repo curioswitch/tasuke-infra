@@ -29,6 +29,14 @@ export class Apps extends Construct {
       service: "run.googleapis.com",
     });
 
+    new ProjectService(this, "service-cloudtrace", {
+      service: "cloudtrace.googleapis.com",
+    });
+
+    new ProjectService(this, "service-monitoring", {
+      service: "monitoring.googleapis.com",
+    });
+
     const dockerRegistry = new ArtifactRegistryRepository(this, "docker-repo", {
       repositoryId: "docker",
       location: "us-central1",
@@ -60,6 +68,24 @@ export class Apps extends Construct {
       member: config.githubRepoIamMember,
     });
 
+    const ghcrRepo = new ArtifactRegistryRepository(this, "ghcr-repo", {
+      repositoryId: "ghcr",
+      location: "us-central1",
+      format: "DOCKER",
+      mode: "REMOTE_REPOSITORY",
+      remoteRepositoryConfig: {
+        dockerRepository: {
+          customRepository: {
+            uri: "https://ghcr.io",
+          },
+        },
+      },
+
+      dependsOn: [artifactRegistryService],
+    });
+
+    const otelCollector = `${ghcrRepo.location}-docker.pkg.dev/${ghcrRepo.project}/${ghcrRepo.name}/curioswitch/go-usegcp/otel-collector:latest`;
+
     const frontendServer = new Service(this, {
       name: "frontend-server",
       project: config.project,
@@ -67,6 +93,7 @@ export class Apps extends Construct {
       artifactRegistry: dockerRegistry,
       deployer: config.githubRepoIamMember,
       public: true,
+      otelCollector,
 
       dependsOn: [runService],
     });
