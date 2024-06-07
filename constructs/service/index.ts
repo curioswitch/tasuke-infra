@@ -93,9 +93,15 @@ export class Service extends Construct {
       });
     }
 
+    env.push({
+      name: "LOGGING_JSON",
+      value: "true",
+    });
+
     const otelContainer = {
       image: config.otelCollector,
       name: "collector",
+      args: ["--config", "/otel/config.yaml"],
       resources: {
         cpuIdle: true,
         startupCpuBoost: true,
@@ -131,6 +137,23 @@ export class Service extends Construct {
             resources: {
               cpuIdle: true,
               startupCpuBoost: true,
+            },
+            startupProbe: {
+              periodSeconds: 1,
+              failureThreshold: 10,
+              initialDelaySeconds: 1,
+              httpGet: {
+                path: "/internal/health",
+                port: 8080,
+              },
+            },
+            livenessProbe: {
+              periodSeconds: 5,
+              failureThreshold: 3,
+              httpGet: {
+                path: "/internal/health",
+                port: 8080,
+              },
             },
             env: [...env],
             ports: {

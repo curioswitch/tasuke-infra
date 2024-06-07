@@ -103,5 +103,23 @@ export class Apps extends Construct {
       role: "roles/datastore.user",
       member: frontendServer.serviceAccount.member,
     });
+
+    const webhookServer = new Service(this, {
+      name: "webhook-server",
+      project: config.project,
+      environment: config.environment,
+      artifactRegistry: dockerRegistry,
+      deployer: config.githubRepoIamMember,
+      public: true,
+      otelCollector,
+
+      dependsOn: [runService],
+    });
+
+    new ProjectIamMember(this, "webhook-server-firestore", {
+      project: config.project,
+      role: "roles/datastore.user",
+      member: webhookServer.serviceAccount.member,
+    });
   }
 }
