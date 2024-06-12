@@ -5,12 +5,14 @@ import { ProjectIamMember } from "@cdktf/provider-google/lib/project-iam-member"
 import { ProjectService } from "@cdktf/provider-google/lib/project-service";
 import { Construct } from "constructs";
 import { Service } from "../../constructs/service";
+import type { Secrets } from "./secrets";
 
 export interface AppsConfig {
   project: string;
   domain: string;
   environment: string;
   githubRepoIamMember: string;
+  secrets: Secrets;
 }
 
 export class Apps extends Construct {
@@ -112,6 +114,12 @@ export class Apps extends Construct {
       deployer: config.githubRepoIamMember,
       public: true,
       otelCollector,
+
+      envSecrets: {
+        GITHUB_SECRET: config.secrets.githubWebhookSecretSecretV1,
+        GITHUB_PRIVATEKEYBASE64:
+          config.secrets.githubAppPrivateKeyBase64SecretV1,
+      },
 
       dependsOn: [runService],
     });

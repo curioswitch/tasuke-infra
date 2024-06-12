@@ -5,6 +5,8 @@ import {
 import type { ArtifactRegistryRepository } from "@cdktf/provider-google/lib/artifact-registry-repository";
 import { CloudRunServiceIamMember } from "@cdktf/provider-google/lib/cloud-run-service-iam-member";
 import { ProjectIamMember } from "@cdktf/provider-google/lib/project-iam-member";
+import { SecretManagerSecretIamMember } from "@cdktf/provider-google/lib/secret-manager-secret-iam-member";
+import type { SecretManagerSecretVersion } from "@cdktf/provider-google/lib/secret-manager-secret-version";
 import { ServiceAccount } from "@cdktf/provider-google/lib/service-account";
 import { ServiceAccountIamMember } from "@cdktf/provider-google/lib/service-account-iam-member";
 import type { ITerraformDependable } from "cdktf";
@@ -19,6 +21,8 @@ export interface ServiceConfig {
   public?: boolean;
 
   otelCollector: string;
+
+  envSecrets?: Record<string, SecretManagerSecretVersion>;
 
   deployer: string;
 
@@ -69,6 +73,8 @@ export class Service extends Construct {
       member: config.deployer,
     });
 
+    const dependsOn = config.dependsOn ?? [];
+
     const env: GoogleCloudRunV2ServiceTemplateContainersEnv[] = [];
     env.push({
       name: "CONFIG_ENV",
@@ -97,6 +103,29 @@ export class Service extends Construct {
       name: "LOGGING_JSON",
       value: "true",
     });
+
+    for (const [name, secret] of Object.entries(config.envSecrets ?? {})) {
+      env.push({
+        name,
+        valueSource: {
+          secretKeyRef: {
+            secret: secret.secret,
+            version: secret.version,
+          },
+        },
+      });
+
+      const secretIam = new SecretManagerSecretIamMember(
+        this,
+        `secret-accessor-${name}`,
+        {
+          secretId: secret.secret,
+          role: "roles/secretmanager.secretAccessor",
+          member: this.serviceAccount.member,
+        },
+      );
+      dependsOn.push(secretIam);
+    }
 
     const otelContainer = {
       image: config.otelCollector,
@@ -164,7 +193,7 @@ export class Service extends Construct {
           otelContainer,
         ],
       },
-      dependsOn: config.dependsOn,
+      dependsOn,
       lifecycle: {
         ignoreChanges: config.imageTag
           ? undefined

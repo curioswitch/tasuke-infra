@@ -2,6 +2,7 @@ import { DataGoogleIamWorkloadIdentityPool } from "@cdktf/provider-google-beta/l
 import { GoogleBetaProvider } from "@cdktf/provider-google-beta/lib/provider";
 import { ProjectIamMember } from "@cdktf/provider-google/lib/project-iam-member";
 import { GoogleProvider } from "@cdktf/provider-google/lib/provider";
+import { RandomProvider } from "@cdktf/provider-random/lib/provider";
 import { GcsBackend, TerraformStack } from "cdktf";
 import type { Construct } from "constructs";
 import { Apps } from "./apps";
@@ -9,6 +10,7 @@ import { Database } from "./database";
 import { Dns } from "./dns";
 import { Hosting } from "./hosting";
 import { Identity } from "./identity";
+import { Secrets } from "./secrets";
 import { ServiceAccounts } from "./service-accounts";
 
 export interface TasukeConfig {
@@ -20,6 +22,8 @@ export interface TasukeConfig {
 
   githubClientId: string;
   githubClientSecretCiphertext: string;
+  githubAppId: number;
+  githubAppPrivateKeyBase64Ciphertext: string;
 }
 
 export class TasukeStack extends TerraformStack {
@@ -41,6 +45,8 @@ export class TasukeStack extends TerraformStack {
       region: "us-central1",
       userProjectOverride: true,
     });
+
+    new RandomProvider(this, "random");
 
     const githubIdPool = new DataGoogleIamWorkloadIdentityPool(
       this,
@@ -73,11 +79,18 @@ export class TasukeStack extends TerraformStack {
       project: config.project,
     });
 
+    const secrets = new Secrets(this, {
+      project: config.project,
+      githubAppPrivateKeyBase64Ciphertext:
+        config.githubAppPrivateKeyBase64Ciphertext,
+    });
+
     new Apps(this, {
       project: config.project,
       domain: config.domain,
       environment: config.environment,
       githubRepoIamMember: githubTasukeIamMember,
+      secrets,
     });
 
     const hosting = new Hosting(this, {
