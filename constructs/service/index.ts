@@ -135,11 +135,14 @@ export class Service extends Construct {
         cpuIdle: true,
         startupCpuBoost: true,
         limits: {
-          cpu: "500m",
+          cpu: "1000m",
           memory: "256Mi",
         },
       },
       startupProbe: {
+        periodSeconds: 1,
+        failureThreshold: 10,
+        initialDelaySeconds: 1,
         httpGet: {
           path: "/",
           port: 13133,
