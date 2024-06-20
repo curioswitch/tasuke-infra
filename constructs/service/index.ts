@@ -22,6 +22,7 @@ export interface ServiceConfig {
 
   otelCollector: string;
 
+  env?: Record<string, string>;
   envSecrets?: Record<string, SecretManagerSecretVersion>;
 
   deployer: string;
@@ -103,6 +104,13 @@ export class Service extends Construct {
       name: "LOGGING_JSON",
       value: "true",
     });
+
+    for (const [name, value] of Object.entries(config.env ?? {})) {
+      env.push({
+        name,
+        value,
+      });
+    }
 
     for (const [name, secret] of Object.entries(config.envSecrets ?? {})) {
       env.push({

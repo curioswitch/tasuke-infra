@@ -12,6 +12,7 @@ export interface AppsConfig {
   domain: string;
   environment: string;
   githubRepoIamMember: string;
+  githubAppId: number;
   secrets: Secrets;
 }
 
@@ -114,6 +115,10 @@ export class Apps extends Construct {
       deployer: config.githubRepoIamMember,
       public: true,
       otelCollector,
+
+      env: {
+        GITHUB_APPID: config.githubAppId.toString(),
+      },
 
       envSecrets: {
         GITHUB_SECRET: config.secrets.githubWebhookSecretSecretV1,

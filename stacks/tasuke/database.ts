@@ -38,5 +38,20 @@ export class Database extends Construct {
         },
       ],
     });
+
+    new FirestoreIndex(this, "users-index", {
+      database: db.name,
+      collection: "users",
+      fields: [
+        {
+          fieldPath: "programmingLanguageIds",
+          arrayConfig: "CONTAINS",
+        },
+        {
+          fieldPath: "remainingReviews",
+          order: "DESCENDING",
+        },
+      ],
+    });
   }
 }

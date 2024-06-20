@@ -90,6 +90,7 @@ export class TasukeStack extends TerraformStack {
       domain: config.domain,
       environment: config.environment,
       githubRepoIamMember: githubTasukeIamMember,
+      githubAppId: config.githubAppId,
       secrets,
     });
 
