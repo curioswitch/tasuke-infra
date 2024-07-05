@@ -2,6 +2,7 @@ import { DataGoogleIamWorkloadIdentityPool } from "@cdktf/provider-google-beta/l
 import { GoogleBetaProvider } from "@cdktf/provider-google-beta/lib/provider";
 import { ProjectIamMember } from "@cdktf/provider-google/lib/project-iam-member";
 import { GoogleProvider } from "@cdktf/provider-google/lib/provider";
+import { Password } from "@cdktf/provider-random/lib/password";
 import { RandomProvider } from "@cdktf/provider-random/lib/provider";
 import { GcsBackend, TerraformStack } from "cdktf";
 import type { Construct } from "constructs";
@@ -107,6 +108,10 @@ export class TasukeStack extends TerraformStack {
       devProject: config.devProject,
       devDomain: config.devDomain,
       firebaseDomain: hosting.customDomain,
+    });
+
+    new Password(this, "unused-password", {
+      length: 32,
     });
   }
 }
