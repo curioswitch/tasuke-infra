@@ -16,6 +16,7 @@ jobs:
     if: github.event.pull_request.head.repo.fork != true
 
     strategy:
+      fail-fast: false
       matrix:
         env:
           - dev
@@ -53,5 +54,51 @@ jobs:
         working-directory: cdktf.out/stacks/${{ matrix.env }}
 
       - name: Terraform Plan
+        id: plan
         run: terraform plan -no-color
         working-directory: cdktf.out/stacks/${{ matrix.env }}
+
+      - uses: actions/github-script@v7
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const lines = process.env.RESULT
+              .replace(new RegExp('\\n' + '-'.repeat(72) + '[\\s\\S]*'), '')
+              .split('\n')
+              .filter(line => !line.includes('Refreshing state...'))
+
+            #### Terraform Plan (${{ matrix.env }}) 📖\`${{ steps.plan.outcome }}\`
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`${ lines.join('\n') }\`\`\`
+
+            </details>
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            })
+
+            const botComment = comments.find(comment => {
+              return comment.user.type === 'Bot' && comment.body.includes('Terraform Plan (${{ matrix.env }})')
+            })
+
+            if (botComment) {
+              github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: output
+              })
+            } else {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: output
+              })
+            }
