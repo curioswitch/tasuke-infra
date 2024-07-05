@@ -1,0 +1,57 @@
+name: Infra CI/CD
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  pull-requests: write
+
+concurrency:
+  group: terraform
+
+env:
+  DIR: cdktf.out/stacks/${{ startsWith(github.ref_name, 'release/') && 'prod' || 'dev'}}
+  GCP_PROJECT_ID: ${{ startsWith(github.ref_name, 'release/') && 'tasuke-prod' || 'tasuke-dev'}}
+  GCP_PROJECT_NUMBER: ${{ startsWith(github.ref_name, 'release/') && '840011577241' || '720364425367'}}
+  
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+
+    environment: ${{ startsWith(github.ref_name, 'release/') && 'prod' || 'dev'}}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/${{ env.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github/providers/curioswitch
+          project_id: ${{ env.GCP_PROJECT_ID }}
+          service_account: terraform-admin@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - run: pnpm install
+      
+      - run: pnpm run synth
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ${{ env.DIR }}
+
+      - name: Terraform Apply
+        run: terraform apply -no-color -auto-approve
+        working-directory: ${{ env.DIR }}
