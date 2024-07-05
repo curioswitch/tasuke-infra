@@ -57,7 +57,7 @@ export class TasukeStack extends TerraformStack {
       },
     );
 
-    const githubTasukeIamMember = `principalSet://iam.googleapis.com/${githubIdPool.name}/attribute.repository/curioswitch/tasuke`;
+    const githubTasukeIamMember = `principal://iam.googleapis.com/${githubIdPool.name}/subject/repo:curioswitch/tasuke:environment:${config.environment}`;
 
     new Database(this);
 

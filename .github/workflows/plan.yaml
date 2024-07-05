@@ -1,0 +1,52 @@
+name: Infra CI/CD
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  pull-requests: write
+
+concurrency:
+  group: terraform
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: !github.event.pull_request.head.repo.fork
+
+    strategy:
+      matrix:
+        env:
+          - dev
+          - prod
+
+    environment: ${{ matrix.env }}-viewer
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/${{ matrix.env == 'prod' && '840011577241' || '720364425367' }}/locations/global/workloadIdentityPools/github/providers/curioswitch
+          project_id: ${{ matrix.env == 'prod' && 'tasuke-prod' || 'tasuke-dev' }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+      
+      - run: pnpm run synth
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: cdktf.out/stacks/${{ matrix.env }}
+
+      - name: Terraform Plan
+        run: terraform plan -no-color
+        working-directory: cdktf.out/stacks/${{ matrix.env }}

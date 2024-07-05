@@ -6,7 +6,11 @@
     }
   ],
   "extensions": {
-    "recommendations": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "github.vscode-github-actions"
+    ]
   },
   "settings": {
     "editor.codeActionsOnSave": {
@@ -20,6 +24,9 @@
     "jest.jestCommandLine": "yarn run test",
     "jest.runMode": { "type": "on-demand", "deferred": true },
     // Multiple language syntax mysteriously doesn't reliably work.
+    "[github-actions-workflow]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
     "[javascript]": {
       "editor.formatOnSave": true,
       "editor.defaultFormatter": "biomejs.biome"
