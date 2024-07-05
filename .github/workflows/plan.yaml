@@ -13,7 +13,7 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: !github.event.pull_request.head.repo.fork
+    if: github.event.pull_request.head.repo.fork != true
 
     strategy:
       matrix:
@@ -37,6 +37,7 @@ jobs:
         with:
           workload_identity_provider: projects/${{ matrix.env == 'prod' && '840011577241' || '720364425367' }}/locations/global/workloadIdentityPools/github/providers/curioswitch
           project_id: ${{ matrix.env == 'prod' && 'tasuke-prod' || 'tasuke-dev' }}
+          service_account: terraform-viewer@${{ matrix.env == 'prod' && 'tasuke-prod' || 'tasuke-dev' }}.iam.gserviceaccount.com
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
