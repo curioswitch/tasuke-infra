@@ -64,7 +64,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const lines = process.env.RESULT
+            const lines = process.env.PLAN
               .replace(new RegExp('\\n' + '-'.repeat(72) + '[\\s\\S]*'), '')
               .split('\n')
               .filter(line => !line.includes('Refreshing state...'))
