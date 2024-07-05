@@ -5,6 +5,7 @@ import type { GoogleBetaProvider } from "@cdktf/provider-google-beta/lib/provide
 import { ProjectIamCustomRole } from "@cdktf/provider-google/lib/project-iam-custom-role";
 import { ProjectIamMember } from "@cdktf/provider-google/lib/project-iam-member";
 import { ServiceAccount } from "@cdktf/provider-google/lib/service-account";
+import { ServiceAccountIamMember } from "@cdktf/provider-google/lib/service-account-iam-member";
 import { TerraformOutput } from "cdktf";
 import { Construct } from "constructs";
 
@@ -73,8 +74,8 @@ export class Hosting extends Construct {
       member: firebaseDeployer.member,
     });
 
-    new ProjectIamMember(this, "github-firebase-deployer", {
-      project: config.project,
+    new ServiceAccountIamMember(this, "github-firebase-deployer", {
+      serviceAccountId: firebaseDeployer.name,
       role: "roles/iam.serviceAccountTokenCreator",
       member: config.githubRepoIamMember,
     });
