@@ -18,10 +18,13 @@ env:
   GCP_PROJECT_NUMBER: ${{ startsWith(github.ref_name, 'release/') && '840011577241' || '720364425367'}}
   
 jobs:
-  apply:
+  plan:
     runs-on: ubuntu-latest
 
-    environment: ${{ startsWith(github.ref_name, 'release/') && 'prod' || 'dev'}}
+    environment: ${{ startsWith(github.ref_name, 'release/') && 'prod-viewer' || 'dev-viewer'}}
+
+    outputs:
+      has-diffs: ${{ steps.save.outputs.has-diffs }}
 
     steps:
       - name: Checkout
@@ -52,6 +55,48 @@ jobs:
         run: terraform init
         working-directory: ${{ env.DIR }}
 
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -detailed-exitcode -out=${{ github.sha }}.tfplan
+        working-directory: ${{ env.DIR }}
+
+      - name: Save Plan
+        id: save
+        if: steps.plan.outputs.exitcode == 2
+        run: |
+          gsutil cp ${{ github.sha }}.tfplan gs://${{ env.GCP_PROJECT_ID }}-tfstate/plans/
+          echo "has-diffs=true" >> "$GITHUB_OUTPUT"
+        working-directory: ${{ env.DIR }}
+
+  apply:
+    runs-on: ubuntu-latest
+    needs: plan
+    if: needs.plan.outputs.has-diffs == 'true'
+
+    environment: ${{ startsWith(github.ref_name, 'release/') && 'prod' || 'dev'}}
+
+    steps:
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/${{ env.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github/providers/curioswitch
+          project_id: ${{ env.GCP_PROJECT_ID }}
+          service_account: terraform-admin@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - run: pnpm install
+
+      - run: pnpm run synth
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ${{ env.DIR }}
+
+      - name: Load Plan
+        run: gsutil cp gs://${{ env.GCP_PROJECT_ID }}-tfstate/plans/${{ github.sha }}.tfplan .
+        working-directory: ${{ env.DIR }}
+
       - name: Terraform Apply
-        run: terraform apply -no-color -auto-approve
+        run: terraform apply -no-color ${{ github.sha }}.tfplan
         working-directory: ${{ env.DIR }}
