@@ -42,7 +42,7 @@ jobs:
         with:
           workload_identity_provider: projects/${{ env.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github/providers/curioswitch
           project_id: ${{ env.GCP_PROJECT_ID }}
-          service_account: terraform-admin@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+          service_account: terraform-viewer@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
