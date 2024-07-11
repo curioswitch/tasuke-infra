@@ -59,14 +59,14 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -no-color -detailed-exitcode -out=${{ github.sha }}.tfplan
+        run: terraform plan -no-color -detailed-exitcode -out=tfplan
         working-directory: ${{ env.DIR }}
 
       - name: Save Plan
         id: save
         if: steps.plan.outputs.exitcode == 2
         run: |
-          gsutil cp ${{ github.sha }}.tfplan gs://${{ env.GCP_PROJECT_ID }}-tfstate/plans/
+          gsutil cp -R . gs://${{ env.GCP_PROJECT_ID }}-tfstate/plans/${{ github.sha }}
           echo "has-diffs=true" >> "$GITHUB_OUTPUT"
         working-directory: ${{ env.DIR }}
 
@@ -89,18 +89,10 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - run: pnpm install
-
-      - run: pnpm run synth
-
-      - name: Terraform Init
-        run: terraform init
-        working-directory: ${{ env.DIR }}
-
       - name: Load Plan
-        run: gsutil cp gs://${{ env.GCP_PROJECT_ID }}-tfstate/plans/${{ github.sha }}.tfplan .
+        run: gsutil cp -R gs://${{ env.GCP_PROJECT_ID }}-tfstate/plans/${{ github.sha }} .
         working-directory: ${{ env.DIR }}
 
       - name: Terraform Apply
-        run: terraform apply -no-color ${{ github.sha }}.tfplan
-        working-directory: ${{ env.DIR }}
+        run: terraform apply -no-color tfplan
+        working-directory: ${{ env.DIR }}/${{ github.sha }}
