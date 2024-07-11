@@ -91,8 +91,7 @@ jobs:
 
       - name: Load Plan
         run: gsutil cp -R gs://${{ env.GCP_PROJECT_ID }}-tfstate/plans/${{ github.sha }} .
-        working-directory: ${{ env.DIR }}
 
       - name: Terraform Apply
         run: terraform apply -no-color tfplan
-        working-directory: ${{ env.DIR }}/${{ github.sha }}
+        working-directory: ${{ github.sha }}
