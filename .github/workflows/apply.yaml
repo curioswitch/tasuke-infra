@@ -44,6 +44,8 @@ jobs:
           project_id: ${{ env.GCP_PROJECT_ID }}
           service_account: terraform-viewer@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com
 
+      - uses: google-github-actions/setup-gcloud@v2
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
@@ -81,6 +83,8 @@ jobs:
           workload_identity_provider: projects/${{ env.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github/providers/curioswitch
           project_id: ${{ env.GCP_PROJECT_ID }}
           service_account: terraform-admin@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+
+      - uses: google-github-actions/setup-gcloud@v2
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
