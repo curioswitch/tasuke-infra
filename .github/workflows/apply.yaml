@@ -66,7 +66,7 @@ jobs:
         id: save
         if: steps.plan.outputs.exitcode == 2
         run: |
-          gsutil cp -R . gs://${{ env.GCP_PROJECT_ID }}-tfstate/plans/${{ github.sha }}
+          gsutil cp cdk.tf.json tfplan gs://${{ env.GCP_PROJECT_ID }}-tfstate/plans/${{ github.sha }}
           echo "has-diffs=true" >> "$GITHUB_OUTPUT"
         working-directory: ${{ env.DIR }}
 
@@ -91,6 +91,10 @@ jobs:
 
       - name: Load Plan
         run: gsutil cp -R gs://${{ env.GCP_PROJECT_ID }}-tfstate/plans/${{ github.sha }} .
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ${{ github.sha }}
 
       - name: Terraform Apply
         run: terraform apply -no-color tfplan
