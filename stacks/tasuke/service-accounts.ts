@@ -20,9 +20,5 @@ export class ServiceAccounts extends Construct {
       role: "roles/iam.serviceAccountTokenCreator",
       member: itServiceAccount.member,
     });
-
-    new ServiceAccount(this, "choko-test", {
-      accountId: "choko-test",
-    });
   }
 }
