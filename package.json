@@ -2,8 +2,9 @@
   "name": "tasukeinfra",
   "version": "1.0.0",
   "main": "main.js",
+  "type": "module",
   "types": "main.ts",
-  "license": "MIT-2.0",
+  "license": "MIT",
   "scripts": {
     "format": "biome format --write . && biome lint --apply-unsafe . && prettier --write .",
     "get": "cdktf get",
@@ -19,7 +20,7 @@
   "engines": {
     "node": ">=18.0"
   },
-  "packageManager": "pnpm@8.12.1",
+  "packageManager": "pnpm@9.6.0",
   "dependencies": {
     "@cdktf/provider-google": "^13.25.0",
     "@cdktf/provider-google-beta": "^13.18.0",
@@ -36,7 +37,7 @@
     "prettier": "^3.2.5",
     "prettier-plugin-organize-imports": "^3.2.4",
     "ts-jest": "^29.1.2",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.16.2",
     "typescript": "^5.4.5"
   }
 }

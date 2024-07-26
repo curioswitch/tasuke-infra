@@ -25,6 +25,7 @@
     "jest.runMode": { "type": "on-demand", "deferred": true },
     // Multiple language syntax mysteriously doesn't reliably work.
     "[github-actions-workflow]": {
+      "editor.formatOnSave": true,
       "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[javascript]": {
