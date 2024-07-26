@@ -13,7 +13,7 @@ concurrency:
 jobs:
   plan:
     if: github.event.pull_request.head.repo.fork != true
-    uses: curioswitch/cdktf-actions/pr.yaml@7b95271d159274da2fa945d063ac7a0d32c4fb1d
+    uses: curioswitch/cdktf-actions/.github/workflows/pr.yaml@0d870d9904d292f41c1edde0c7aa080cce00a384
     with:
       gcp_project_id: tasuke-dev
       workload_identity_provider: projects/720364425367/locations/global/workloadIdentityPools/github/providers/curioswitch
