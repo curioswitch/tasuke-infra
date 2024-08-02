@@ -19,4 +19,3 @@ jobs:
     with:
       gcp_project_id: tasuke-dev
       gcp_project_number: 720364425367
-      workload_identity_provider: curioswitch
