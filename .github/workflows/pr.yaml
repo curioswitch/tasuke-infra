@@ -16,4 +16,4 @@ jobs:
     uses: curioswitch/cdktf-actions/.github/workflows/pr.yaml@e03b6d9169ce00df07270b25ecf027f954cd9e45
     with:
       gcp_project_id: tasuke-dev
-      workload_identity_provider: projects/720364425367/locations/global/workloadIdentityPools/github/providers/curioswitch
+      gcp_project_number: 720364425367
