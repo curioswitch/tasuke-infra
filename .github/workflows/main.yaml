@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   plan:
-    uses: curioswitch/cdktf-actions/.github/workflows/main.yaml@2838afabaf55ce4155ce1934d06db14a340a3b99
+    uses: curioswitch/cdktf-actions/.github/workflows/main.yaml@83ee91d15e11f470d9a690ee1d2966481caf47ca
     with:
       gcp_project_id: tasuke-dev
       gcp_project_number: 720364425367
