@@ -24,5 +24,9 @@ export class ServiceAccounts extends Construct {
     new ServiceAccount(this, "test-user1", {
       accountId: "test-user1",
     });
+
+    new ServiceAccount(this, "test-user2", {
+      accountId: "test-user2",
+    });
   }
 }
