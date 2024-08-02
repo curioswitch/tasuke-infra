@@ -13,7 +13,7 @@ concurrency:
 jobs:
   plan:
     if: github.event.pull_request.head.repo.fork != true
-    uses: curioswitch/cdktf-actions/.github/workflows/pr.yaml@995e680e4e43e78e0e3e0cd9f9925728564829a6
+    uses: curioswitch/cdktf-actions/.github/workflows/pr.yaml@2838afabaf55ce4155ce1934d06db14a340a3b99
     with:
       gcp_project_id: tasuke-dev
       gcp_project_number: 720364425367
