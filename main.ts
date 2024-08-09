@@ -1,7 +1,10 @@
 import { App } from "cdktf";
-import { TasukeStack } from "./stacks/tasuke";
+import { SysadminStack } from "./stacks/sysadmin/index.js";
+import { TasukeStack } from "./stacks/tasuke/index.js";
 
 const app = new App();
+
+new SysadminStack(app);
 
 new TasukeStack(app, {
   environment: "dev",

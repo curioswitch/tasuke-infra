@@ -4,8 +4,8 @@ import { ProjectIamCustomRole } from "@cdktf/provider-google/lib/project-iam-cus
 import { ProjectIamMember } from "@cdktf/provider-google/lib/project-iam-member";
 import { ProjectService } from "@cdktf/provider-google/lib/project-service";
 import { Construct } from "constructs";
-import { Service } from "../../constructs/service";
-import type { Secrets } from "./secrets";
+import { Service } from "../../constructs/service/index.js";
+import type { Secrets } from "./secrets.js";
 
 export interface AppsConfig {
   project: string;
