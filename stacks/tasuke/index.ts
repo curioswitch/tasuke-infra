@@ -5,13 +5,13 @@ import { GoogleProvider } from "@cdktf/provider-google/lib/provider";
 import { RandomProvider } from "@cdktf/provider-random/lib/provider";
 import { GcsBackend, TerraformStack } from "cdktf";
 import type { Construct } from "constructs";
-import { Apps } from "./apps";
-import { Database } from "./database";
-import { Dns } from "./dns";
-import { Hosting } from "./hosting";
-import { Identity } from "./identity";
-import { Secrets } from "./secrets";
-import { ServiceAccounts } from "./service-accounts";
+import { Apps } from "./apps.js";
+import { Database } from "./database.js";
+import { Dns } from "./dns.js";
+import { Hosting } from "./hosting.js";
+import { Identity } from "./identity.js";
+import { Secrets } from "./secrets.js";
+import { ServiceAccounts } from "./service-accounts.js";
 
 export interface TasukeConfig {
   environment: string;

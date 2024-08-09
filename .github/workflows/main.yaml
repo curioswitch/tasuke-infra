@@ -4,6 +4,8 @@ on:
     branches:
       - main
       - release/**
+    paths-ignore:
+      - stacks/sysadmin/**
   workflow_dispatch:
 
 permissions:
@@ -14,7 +16,7 @@ concurrency:
   group: terraform
 
 jobs:
-  plan:
+  apply:
     uses: curioswitch/cdktf-actions/.github/workflows/main.yaml@83ee91d15e11f470d9a690ee1d2966481caf47ca
     with:
       gcp_project_id: ${{ startsWith(github.ref_name, 'release/') && 'tasuke-prod' || 'tasuke-dev'}}
