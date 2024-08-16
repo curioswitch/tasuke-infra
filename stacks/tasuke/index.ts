@@ -3,6 +3,7 @@ import { GoogleBetaProvider } from "@cdktf/provider-google-beta/lib/provider";
 import { ProjectIamMember } from "@cdktf/provider-google/lib/project-iam-member";
 import { GoogleProvider } from "@cdktf/provider-google/lib/provider";
 import { RandomProvider } from "@cdktf/provider-random/lib/provider";
+import { CurioStack } from "@curioswitch/cdktf-constructs";
 import { GcsBackend, TerraformStack } from "cdktf";
 import type { Construct } from "constructs";
 import { Apps } from "./apps.js";
@@ -48,6 +49,14 @@ export class TasukeStack extends TerraformStack {
 
     new RandomProvider(this, "random");
 
+    const curiostack = new CurioStack(this, {
+      project: config.project,
+      location: "us-central1",
+      domain: config.domain,
+      githubRepo: "curioswitch/tasuke",
+      googleBeta,
+    });
+
     const githubIdPool = new DataGoogleIamWorkloadIdentityPool(
       this,
       "github-id-pool",
@@ -87,11 +96,9 @@ export class TasukeStack extends TerraformStack {
 
     new Apps(this, {
       project: config.project,
-      domain: config.domain,
-      environment: config.environment,
-      githubRepoIamMember: githubTasukeIamMember,
       githubAppId: config.githubAppId,
       secrets,
+      curiostack,
     });
 
     const hosting = new Hosting(this, {

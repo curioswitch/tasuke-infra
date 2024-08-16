@@ -22,7 +22,7 @@ importers:
         version: 11.0.2(cdktf@0.20.8(constructs@10.3.0))(constructs@10.3.0)
       '@curioswitch/cdktf-constructs':
         specifier: github:curioswitch/cdktf-constructs#main
-        version: https://codeload.github.com/curioswitch/cdktf-constructs/tar.gz/c4c078f35dc0b9409e6e6597f8854ed978794ed1
+        version: https://codeload.github.com/curioswitch/cdktf-constructs/tar.gz/7ab082c5b88532b8efc99c9d6d29d1c32fded418
       cdktf:
         specifier: ^0.20.8
         version: 0.20.8(constructs@10.3.0)
@@ -384,8 +384,8 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@curioswitch/cdktf-constructs@https://codeload.github.com/curioswitch/cdktf-constructs/tar.gz/c4c078f35dc0b9409e6e6597f8854ed978794ed1':
-    resolution: {tarball: https://codeload.github.com/curioswitch/cdktf-constructs/tar.gz/c4c078f35dc0b9409e6e6597f8854ed978794ed1}
+  '@curioswitch/cdktf-constructs@https://codeload.github.com/curioswitch/cdktf-constructs/tar.gz/7ab082c5b88532b8efc99c9d6d29d1c32fded418':
+    resolution: {tarball: https://codeload.github.com/curioswitch/cdktf-constructs/tar.gz/7ab082c5b88532b8efc99c9d6d29d1c32fded418}
     version: 0.0.1
     engines: {node: '>=18.0'}
 
@@ -2736,8 +2736,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.6.0-dev.20240815:
-    resolution: {integrity: sha512-s/pqeJ9u7rBpafx0JKVmFic5QVh/iuuF095xA8qHImL6pOqIEkkBWQu/fvLVdLEB5W/aOsrVQuxrXrSyykzjyA==}
+  typescript@5.6.0-dev.20240816:
+    resolution: {integrity: sha512-q6FNh1r9BcrpYEeblr50Kh7l1G+TZkYHt73Cr0VljCILUYBEyJ4kd6C5MB/cLr6EN9vJaud1CKijp2yl8ZlRuw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -3357,7 +3357,7 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.9
     optional: true
 
-  '@curioswitch/cdktf-constructs@https://codeload.github.com/curioswitch/cdktf-constructs/tar.gz/c4c078f35dc0b9409e6e6597f8854ed978794ed1':
+  '@curioswitch/cdktf-constructs@https://codeload.github.com/curioswitch/cdktf-constructs/tar.gz/7ab082c5b88532b8efc99c9d6d29d1c32fded418':
     dependencies:
       '@cdktf/provider-github': 14.2.3(cdktf@0.20.8(constructs@10.3.0))(constructs@10.3.0)
       '@cdktf/provider-google': 13.30.0(cdktf@0.20.8(constructs@10.3.0))(constructs@10.3.0)
@@ -4429,7 +4429,7 @@ snapshots:
     dependencies:
       semver: 7.6.1
       shelljs: 0.8.5
-      typescript: 5.6.0-dev.20240815
+      typescript: 5.6.0-dev.20240816
 
   eastasianwidth@0.2.0: {}
 
@@ -6190,7 +6190,7 @@ snapshots:
 
   typescript@5.4.5: {}
 
-  typescript@5.6.0-dev.20240815: {}
+  typescript@5.6.0-dev.20240816: {}
 
   unbox-primitive@1.0.2:
     dependencies:
