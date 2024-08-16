@@ -12,11 +12,11 @@ importers:
         specifier: ^14.2.3
         version: 14.2.3(cdktf@0.20.8(constructs@10.3.0))(constructs@10.3.0)
       '@cdktf/provider-google':
-        specifier: ^13.27.0
-        version: 13.29.0(cdktf@0.20.8(constructs@10.3.0))(constructs@10.3.0)
+        specifier: ^13.30.0
+        version: 13.30.0(cdktf@0.20.8(constructs@10.3.0))(constructs@10.3.0)
       '@cdktf/provider-google-beta':
-        specifier: ^13.20.0
-        version: 13.22.0(cdktf@0.20.8(constructs@10.3.0))(constructs@10.3.0)
+        specifier: ^13.23.0
+        version: 13.23.0(cdktf@0.20.8(constructs@10.3.0))(constructs@10.3.0)
       '@cdktf/provider-random':
         specifier: ^11.0.2
         version: 11.0.2(cdktf@0.20.8(constructs@10.3.0))(constructs@10.3.0)
@@ -356,15 +356,15 @@ packages:
       cdktf: ^0.20.0
       constructs: ^10.3.0
 
-  '@cdktf/provider-google-beta@13.22.0':
-    resolution: {integrity: sha512-RagJFNsOsC9u5q9RiWpjl2U/n47QTRO3d9dXq60AE4AXu5m7kaImjDZUF5DO1Vx/Cxju62oi2eGIajIKceP85Q==}
+  '@cdktf/provider-google-beta@13.23.0':
+    resolution: {integrity: sha512-ZupuaOzZcr1qzCqWlH6+FUj9dbqy+pOsGDWoANcosFwzMKO4gv15HX5hUdNYEpKE7icYDuj3VmculDnNNPagHQ==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
       cdktf: ^0.20.0
       constructs: ^10.3.0
 
-  '@cdktf/provider-google@13.29.0':
-    resolution: {integrity: sha512-jKBwfgjk10S9RElI2d1+RA//GepAP3XKHD4KgTr63NvLJn+Uscz+e3M1ArlL5lMx4hMPaKh7tiqurZx6TK28+w==}
+  '@cdktf/provider-google@13.30.0':
+    resolution: {integrity: sha512-zgaPpEKDhRmPIJngJwIBjxSizMk33FTrH0B8iZLy41evj6w0XImYYtz9FhQ6rsR93wGm9nHc/UAtX2U97b4qqA==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
       cdktf: ^0.20.0
@@ -2736,8 +2736,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.6.0-dev.20240808:
-    resolution: {integrity: sha512-Fn1H6AFLEKTJkakCqVOAkqNoGCSXhYi9GKW13/a5WWOMAdCtzBcdcViWbfNgu96DcSB9mVulqpHe6XCVdzWERg==}
+  typescript@5.6.0-dev.20240815:
+    resolution: {integrity: sha512-s/pqeJ9u7rBpafx0JKVmFic5QVh/iuuF095xA8qHImL6pOqIEkkBWQu/fvLVdLEB5W/aOsrVQuxrXrSyykzjyA==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -3326,12 +3326,12 @@ snapshots:
       cdktf: 0.20.8(constructs@10.3.0)
       constructs: 10.3.0
 
-  '@cdktf/provider-google-beta@13.22.0(cdktf@0.20.8(constructs@10.3.0))(constructs@10.3.0)':
+  '@cdktf/provider-google-beta@13.23.0(cdktf@0.20.8(constructs@10.3.0))(constructs@10.3.0)':
     dependencies:
       cdktf: 0.20.8(constructs@10.3.0)
       constructs: 10.3.0
 
-  '@cdktf/provider-google@13.29.0(cdktf@0.20.8(constructs@10.3.0))(constructs@10.3.0)':
+  '@cdktf/provider-google@13.30.0(cdktf@0.20.8(constructs@10.3.0))(constructs@10.3.0)':
     dependencies:
       cdktf: 0.20.8(constructs@10.3.0)
       constructs: 10.3.0
@@ -3360,8 +3360,8 @@ snapshots:
   '@curioswitch/cdktf-constructs@https://codeload.github.com/curioswitch/cdktf-constructs/tar.gz/c4c078f35dc0b9409e6e6597f8854ed978794ed1':
     dependencies:
       '@cdktf/provider-github': 14.2.3(cdktf@0.20.8(constructs@10.3.0))(constructs@10.3.0)
-      '@cdktf/provider-google': 13.29.0(cdktf@0.20.8(constructs@10.3.0))(constructs@10.3.0)
-      '@cdktf/provider-google-beta': 13.22.0(cdktf@0.20.8(constructs@10.3.0))(constructs@10.3.0)
+      '@cdktf/provider-google': 13.30.0(cdktf@0.20.8(constructs@10.3.0))(constructs@10.3.0)
+      '@cdktf/provider-google-beta': 13.23.0(cdktf@0.20.8(constructs@10.3.0))(constructs@10.3.0)
       cdktf: 0.20.8(constructs@10.3.0)
       constructs: 10.3.0
 
@@ -4429,7 +4429,7 @@ snapshots:
     dependencies:
       semver: 7.6.1
       shelljs: 0.8.5
-      typescript: 5.6.0-dev.20240808
+      typescript: 5.6.0-dev.20240815
 
   eastasianwidth@0.2.0: {}
 
@@ -6190,7 +6190,7 @@ snapshots:
 
   typescript@5.4.5: {}
 
-  typescript@5.6.0-dev.20240808: {}
+  typescript@5.6.0-dev.20240815: {}
 
   unbox-primitive@1.0.2:
     dependencies:

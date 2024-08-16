@@ -135,29 +135,6 @@ export class Service extends Construct {
       dependsOn.push(secretIam);
     }
 
-    const otelContainer = {
-      image: config.otelCollector,
-      name: "collector",
-      args: ["--config", "/otel/config.yaml"],
-      resources: {
-        cpuIdle: true,
-        startupCpuBoost: true,
-        limits: {
-          cpu: "1000m",
-          memory: "256Mi",
-        },
-      },
-      startupProbe: {
-        periodSeconds: 1,
-        failureThreshold: 10,
-        initialDelaySeconds: 1,
-        httpGet: {
-          path: "/",
-          port: 13133,
-        },
-      },
-    };
-
     this.run = new GoogleCloudRunV2Service(this, "service", {
       name: config.name,
       location: "us-central1",
@@ -201,7 +178,21 @@ export class Service extends Construct {
               containerPort: 8080,
             },
           },
-          otelContainer,
+          {
+            image: config.otelCollector,
+            name: "otel",
+            args: ["--config", "/otel/config.yaml"],
+            resources: {
+              cpuIdle: true,
+              startupCpuBoost: true,
+              limits: {
+                cpu: "1000m",
+                memory: "256Mi",
+              },
+            },
+            // Startup time is relatively slow, we don't add a startup probe so
+            // the main container can serve requests as soon as it's ready.
+          },
         ],
       },
       dependsOn,
