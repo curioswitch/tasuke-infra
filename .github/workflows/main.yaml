@@ -13,11 +13,11 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: terraform
+  group: tf
 
 jobs:
   apply:
-    uses: curioswitch/cdktf-actions/.github/workflows/main.yaml@83ee91d15e11f470d9a690ee1d2966481caf47ca
+    uses: curioswitch/cdktf-actions/.github/workflows/main.yaml@ed358eb998e1bc3a1b3e7d7b8057eaa3b2513370
     with:
       gcp_project_id: ${{ startsWith(github.ref_name, 'release/') && 'tasuke-prod' || 'tasuke-dev'}}
       gcp_project_number: ${{ startsWith(github.ref_name, 'release/') && '840011577241' || '720364425367'}}

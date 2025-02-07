@@ -1,9 +1,12 @@
-import { DataGoogleIamWorkloadIdentityPool } from "@cdktf/provider-google-beta/lib/data-google-iam-workload-identity-pool";
 import { GoogleBetaProvider } from "@cdktf/provider-google-beta/lib/provider";
 import { ProjectIamMember } from "@cdktf/provider-google/lib/project-iam-member";
 import { GoogleProvider } from "@cdktf/provider-google/lib/provider";
 import { RandomProvider } from "@cdktf/provider-random/lib/provider";
-import { CurioStack } from "@curioswitch/cdktf-constructs";
+import {
+  CurioStack,
+  CurioStackIngress,
+  CurioStackWebsite,
+} from "@curioswitch/cdktf-constructs";
 import { GcsBackend, TerraformStack } from "cdktf";
 import type { Construct } from "constructs";
 import { Apps } from "./apps.js";
@@ -57,17 +60,6 @@ export class TasukeStack extends TerraformStack {
       googleBeta,
     });
 
-    const githubIdPool = new DataGoogleIamWorkloadIdentityPool(
-      this,
-      "github-id-pool",
-      {
-        workloadIdentityPoolId: "github",
-        provider: googleBeta,
-      },
-    );
-
-    const githubTasukeIamMember = `principal://iam.googleapis.com/${githubIdPool.name}/subject/repo:curioswitch/tasuke:environment:${config.environment}`;
-
     new Database(this);
 
     new Identity(this, {
@@ -104,7 +96,7 @@ export class TasukeStack extends TerraformStack {
     const hosting = new Hosting(this, {
       project: config.project,
       domain: config.domain,
-      githubRepoIamMember: githubTasukeIamMember,
+      githubRepoIamMember: curiostack.githubEnvironmentIamMember,
       googleBeta,
     });
 
