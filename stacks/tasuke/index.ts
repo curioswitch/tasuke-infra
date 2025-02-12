@@ -57,17 +57,6 @@ export class TasukeStack extends TerraformStack {
       googleBeta,
     });
 
-    const githubIdPool = new DataGoogleIamWorkloadIdentityPool(
-      this,
-      "github-id-pool",
-      {
-        workloadIdentityPoolId: "github",
-        provider: googleBeta,
-      },
-    );
-
-    const githubTasukeIamMember = `principal://iam.googleapis.com/${githubIdPool.name}/subject/repo:curioswitch/tasuke:environment:${config.environment}`;
-
     new Database(this);
 
     new Identity(this, {
@@ -104,7 +93,7 @@ export class TasukeStack extends TerraformStack {
     const hosting = new Hosting(this, {
       project: config.project,
       domain: config.domain,
-      githubRepoIamMember: githubTasukeIamMember,
+      githubRepoIamMember: curiostack.githubEnvironmentIamMember,
       googleBeta,
     });
 
